@@ -1,0 +1,49 @@
+Aplikasi inventaris gudang desktop berbasis Java Swing dan SQLite untuk distributor, toko bangunan, gudang proyek, gudang cabang, dan UMKM yang menyimpan banyak barang. Semua perubahan stok dicatat lewat dokumen resmi: barang masuk dari supplier, barang keluar ke proyek atau cabang, dan stok opname, lengkap dengan kartu stok dan laporan mutasi persediaan yang siap dilaporkan tiap bulan. Jalan offline di Windows, Linux, dan macOS tanpa XAMPP.
+
+Tampilannya bergaya cetak biru (blueprint): latar biru berkisi, garis putih kebiruan, tanda sudut seperti gambar teknik, dan kuning keselamatan untuk tombol utama, dengan font Chivo dan Space Mono. Dokumen dicetak rapi di kertas A4 (bukti penerimaan, surat jalan, berita acara opname, kartu stok, laporan mutasi) dan label rak bisa dicetak dengan barcode Code 128 yang dibaca scanner USB biasa.
+Cara kerja
+Admin menyiapkan master barang (kode, kategori, satuan, lokasi rak, harga satuan, stok minimum) serta daftar supplier dan tujuan pengiriman. Stok tidak pernah diubah langsung: setiap perubahan lewat dokumen dan dicatat di tabel mutasi, sehingga kartu stok setiap barang bisa ditelusuri dari saldo awal sampai saldo akhir.
+
+Staf gudang membuat dokumen Barang Masuk dan Barang Keluar berisi banyak baris barang dengan scan atau ketik kode. Dokumen disimpan dalam satu transaksi BEGIN IMMEDIATE; pengurangan stok memakai UPDATE bersyarat sehingga bila satu baris kekurangan stok, seluruh dokumen dibatalkan dan stok tidak pernah minus. Nomor dokumen BM/BK/OP harian dibuat di transaksi yang sama sehingga tidak dobel walau dua komputer memakai database yang sama. Admin bisa membatalkan dokumen dengan alasan; pembatalan barang masuk ditolak bila barangnya sudah terlanjur keluar.
+
+Untuk stok opname, aplikasi mencetak lembar hitung per rak tanpa angka sistem, lalu admin memasukkan hasil hitung fisik. Stok sistem saat itu disimpan sebagai pembanding, selisih dan nilainya dicatat, dan berita acara bisa dicetak. Laporan meliputi kartu stok, mutasi persediaan per periode, barang paling cepat keluar, dead stock dengan modal tertahan, dan saran belanja restok, semuanya bisa dicetak atau diekspor ke CSV.
+Fitur
+Dasbor: nilai persediaan, dokumen hari ini, grafik unit masuk vs keluar 14 hari, perlu restok, aktivitas terbaru
+Barang masuk multi-baris dari supplier dengan nomor surat jalan supplier
+Barang keluar multi-baris ke proyek, cabang, atau pelanggan dengan cek stok langsung
+Input cepat dengan scan atau ketik kode barang, dialog pencarian barang
+Cetak bukti penerimaan dan surat jalan A4 dengan kolom tanda tangan
+Pembatalan dokumen dengan alasan, stok dibalik otomatis
+Stok opname: lembar hitung per rak tanpa angka sistem, input hasil hitung, selisih dan nilai otomatis
+Berita acara stok opname siap cetak
+Master barang: kode, kategori, satuan, lokasi rak, harga, stok minimum, kode otomatis
+Cetak label rak barcode Code 128 di A4 (3 x 8 label)
+Data supplier dan tujuan pengiriman
+Kartu stok per barang dengan saldo awal dan saldo berjalan
+Laporan mutasi persediaan: awal, masuk, keluar, penyesuaian, akhir, dan nilai
+Analisis fast moving, dead stock (modal tertahan), dan saran belanja restok
+Cetak semua laporan ke A4 dan ekspor CSV aman untuk Excel
+Dua peran: Admin dan Staf gudang
+Stok tidak pernah minus dan nomor dokumen tidak dobel walau dipakai dua komputer
+Password PBKDF2, kunci akun setelah 5 kali salah
+Cadangkan database sekali klik
+Data contoh gudang bahan bangunan 45 barang dan transaksi 60 hari
+Java 17 + Swing + SQLite + Maven, dilengkapi 17 tes JUnit
+Panduan instalasi
+Kebutuhan: JDK 17 atau lebih baru dan Apache Maven (atau IDE NetBeans / IntelliJ IDEA). Internet hanya diperlukan saat build pertama.
+
+Ekstrak ZIP ke folder mana saja, misal D:\StokGudang.
+
+Windows: klik dua kali jalankan.bat. Linux/macOS: jalankan ./jalankan.sh. Lewat IDE: buka folder sebagai proyek Maven, jalankan kelas id.papicode.gudang.App.
+
+Login dengan admin / admin123.
+
+Pilih Isi data contoh bila ingin mencoba dengan data gudang bahan bangunan, atau abaikan untuk mulai dari nol.
+
+Buka Pengaturan: isi nama perusahaan, nama gudang, alamat, kota, telepon, dan nama kepala gudang untuk kop dan tanda tangan dokumen. Wajib ganti password admin.
+
+Isi Supplier & Tujuan, lalu Daftar Barang (boleh dengan saldo awal). Buat akun staf di menu Pengguna.
+
+Mulai catat Barang Masuk dan Barang Keluar. Lakukan Stok Opname berkala.
+
+Database tersimpan di data/stok-gudang.db. Cadangkan rutin lewat Pengaturan → Cadangkan sekarang.
